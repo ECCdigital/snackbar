@@ -19,11 +19,10 @@ export default {
     const router = useRouter(); // Get router instance
 
     const handleLogin = () => {
-      // Perform your login logic here (e.g., API call, validation)
-      // ...
+      // perform login logic here (e.g., API call, validation)
 
-      // If login is successful, navigate to LibraryPage
-      router.push({ name: 'LibraryPage' });
+      // if login is successful, navigate to HomePage
+      router.push({ name: 'HomePage' });
     };
 
     return { username, password, handleLogin };

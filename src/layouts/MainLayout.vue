@@ -5,21 +5,33 @@
       <router-view />
     </q-page-container>
 
+    <q-page-scroller>
+
+    </q-page-scroller>
+
     <q-footer elevated class="bg-grey-2">
       <q-tabs active-bg-color="primary">
         <q-route-tab
+          to="/home"
+          name="HomePage"
+          icon="rocket_launch"
+          label="Start"
+          class="text-dark"
+        />
+
+        <q-route-tab
           to="/library"
           name="LibraryPage"
-          icon="home"
-          label="Library"
+          icon="library_music"
+          label="Audiothek"
           class="text-dark"
         />
 
         <q-route-tab
           to="/favorites"
           name="FavoritesPage"
-          icon="favorite"
-          label="Favorites"
+          icon="route"
+          label="Lernpfad"
           class="text-dark"
         />
 
@@ -27,7 +39,7 @@
           to="/profile"
           name="ProfilePage"
           icon="person"
-          label="Profile"
+          label="Profil"
           class="text-dark"
         />
 
@@ -35,7 +47,7 @@
           to="/settings"
           name="SettingsPage"
           icon="settings"
-          label="Settings"
+          label="Einstellungen"
           class="text-dark"
         />
       </q-tabs>

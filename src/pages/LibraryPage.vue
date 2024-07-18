@@ -1,35 +1,42 @@
 <template>
   <q-page class="bg-grey-1">
-    <q-scroll-area style="height: 150vh; max-width: 100vw;">
+    <q-fab
+      @click="toggleSearchbar"
+      class="fixed-top-right q-ma-sm"
+      icon="search"
+    />
+    <q-infinite-scroll style="height: 150vh; max-width: 100vw;">
       <q-list>
         <q-item v-for="(category, index) in categories" :key="index">
           <q-item-section>
             <q-item-label header class="text-h5 text-primary">{{ category.title }}</q-item-label>
-            <q-scroll-area class="items-scroll-area">
-              <div class="row no-wrap q-gutter-sm">
+            <q-scroll-area  class="items-scroll-area">
+              <div class="flex row no-wrap q-col-gutter-xs">
                 <q-item
                   v-for="(item, itemIndex) in category.items"
-                  clickable
-                  v-ripple
                   :key="itemIndex"
-                  style="width: 200px; margin: 0px"
-                  @click="$router.push({name: 'AudioPlayerPage', params: {audioId: item.id}})"
                 >
-                  <q-card :class="['my-card', getCategoryColor(category.title)]">
-                  <q-icon name="mdi-music" size="lg" class="q-ma-lg"/>
-                  <div class="absolute-top-right q-ma-md">
-                    <q-btn
-                      round
-                      flat
-                      :icon="item.isFavourite ? 'favorite' : 'favorite_border'"
-                      :color="item.isFavourite ? 'red' : 'grey-5'"
-                      @click.stop="toggleFavourite(item)"
-                    />
-                  </div>
-                  <q-card-section>
-                    <div class="text-h6 text-dark">{{ item.title }}</div>
-                    <div class="text-caption text-grey">{{ item.description }}</div>
-                  </q-card-section>
+                  <q-card class="my-card" flat bordered @click="() => {
+                    favoriteStore.setCurrentAudio(item);
+                    $router.push({name: 'AudioPlayerPage'});
+                  }">
+                    <q-card-section class="flex my-card-title" :style="{backgroundImage: getStripeGradient(item.categories)}">
+                    </q-card-section>
+                    <q-card-section class="my-card-main">
+                      <div class="absolute-top-right">
+                        <q-btn
+                          round
+                          flat
+                          :icon="item.isFavourite ? 'favorite' : 'favorite_border'"
+                          :color="item.isFavourite ? 'red' : 'grey-5'"
+                          @click.stop="toggleFavourite(item)"
+                        />
+                      </div>
+                      <div class="text-h6 text-dark">{{ item.title }}</div>
+                      <div class="text-caption text-grey">{{ item.description }}</div>
+                      <div class="text-dark">{{ item.speaker }}</div>
+                      <div class="text-dark">{{ item.duration }}</div>
+                    </q-card-section>
                   </q-card>
                 </q-item>
               </div>
@@ -37,14 +44,22 @@
           </q-item-section>
         </q-item>
       </q-list>
-    </q-scroll-area>
+    </q-infinite-scroll>
   </q-page>
 </template>
 
 <script>
-import { ref } from 'vue';
+import {ref} from 'vue';
+import {useFavoritesStore} from '../stores/favorites'; // Passen Sie den Pfad bei Bedarf an
+
 
 export default {
+  methods: {
+    handleClick(item) {
+      this.useRouter.push({name: 'AudioPlayerPage'});
+    },
+
+  },
   setup() {
     const toggleFavourite = (item) => {
       item.isFavourite = !item.isFavourite;
@@ -58,202 +73,93 @@ export default {
       console.log(`Item ${itemId} is now ${isFavourite ? 'favourite' : 'not favourite'}`);
     }
 
-    const categoryColors = {
-      'Category 1': 'bg-blue-5',
-      'Category 2': 'bg-green-5',
-      'Category 3': 'bg-orange-5',
-      'Category 4': 'bg-red-5',
-      'Category 5': 'bg-teal-5',
-      'Category 6': 'bg-purple-5'
+    const toggleSearchbar = () => {
+      console.log('Searchbar toggled');
+
     };
 
-    const getCategoryColor = (categoryTitle) => categoryColors[categoryTitle] || 'bg-grey-3';
+    const favoriteStore = useFavoritesStore();
 
-    const categories = ref([
+    const getStripeGradient = (itemCategories) => {
+      if (!itemCategories || itemCategories.length === 0) {
+        return 'none';
+      }
+
+      // Farben extrahieren und Gradienten-Stopps erstellen
+      const gradientStops = itemCategories.map((category, index) => {
+        const color = categoryColors[category] || 'grey'; // Standardfarbe, falls keine Übereinstimmung gefunden wird
+        //const startPercent = (100 / itemCategories.length) * index;
+        //const endPercent = (100 / itemCategories.length) * (index + 1);
+        return `${color} 50%, ${color} 50%`;
+      }).join(', ');
+
+      // Gradient erstellen
+      return `linear-gradient(-45deg, ${gradientStops})`;
+    };
+
+    const categoryColors = {
+      'Zugehörigkeit': 'purple',
+      'Macht': 'red',
+      'Ordnung': 'blue',
+      'Erfolg': 'orange',
+      'Gemeinschaft': 'green',
+      'Systemisch': 'yellow',
+      'Holistisch': 'teal',
+      'Überleben': 'brown',
+    };
+
+    const mainCategories = ref([
       {
-        title: 'Category 1',
+        title: 'Corporate Flow',
         items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
+          {id: 1, title: 'Audio 1', description: '...', speaker: 'Kerstin', duration: '3:50 min', categories: ['Macht']},
+          {id: 2, title: 'Audio 2', description: '...', speaker: '..', duration: '..', categories: ['Ordnung', 'Zugehörigkeit']},
+          {id: 3, title: 'Audio 3', description: '...', speaker: '..', duration: '..', categories: ['Gemeinschaft', 'Erfolg']},
+          {id: 4, title: 'Audio 4', description: '...', speaker: '..', duration: '..', categories: ['Systemisch', 'Holistisch']},
+          {id: 5, title: 'Audio 5', description: '...', speaker: '..', duration: '..'},
+          {id: 6, title: 'Audio 6', description: '...', speaker: '..', duration: '..'},
+          {id: 7, title: 'Audio 7', description: '...', speaker: '..', duration: '..'},
+          {id: 8, title: 'Audio 8', description: '...', speaker: '..', duration: '..'},
+          {id: 9, title: 'Audio 9', description: '...', speaker: '..', duration: '..'},
+          {id: 10, title: 'Audio 10', description: '...', speaker: '..', duration: '..'},
         ]
       },
       {
-        title: 'Category 2',
+        title: 'Main 7',
         items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
+          {id: 1, title: 'Audio 1', description: '...', speaker:'..', duration: '..'},
+          {id: 2, title: 'Audio 2', description: '...', speaker:'..', duration: '..'},
+          {id: 3, title: 'Audio 3', description: '...', speaker:'..', duration: '..'},
+          {id: 4, title: 'Audio 4', description: '...', speaker:'..', duration: '..'},
+          {id: 5, title: 'Audio 5', description: '...', speaker:'..', duration: '..'},
+          {id: 6, title: 'Audio 6', description: '...', speaker:'..', duration: '..'},
+          {id: 7, title: 'Audio 7', description: '...', speaker:'..', duration: '..'},
+          {id: 8, title: 'Audio 8', description: '...', speaker:'..', duration: '..'},
+          {id: 9, title: 'Audio 9', description: '...', speaker:'..', duration: '..'},
+          {id: 10, title: 'Audio 10', description: '...', speaker:'..', duration: '..'},
         ]
       },
-      { title: 'Category 3', items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
-        ]},
-      { title: 'Category 4', items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
-        ]},
-      { title: 'Category 5', items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
-        ]},
-      { title: 'Category 6', items: [
-          { id: 1, title: 'Audio 1', description: '...', image: '...' },
-          { id: 2, title: 'Audio 2', description: '...', image: '...' },
-          { id: 3, title: 'Audio 3', description: '...', image: '...'},
-          { id: 4, title: 'Audio 4', description: '...', image: '...'},
-          { id: 5, title: 'Audio 5', description: '...', image: '...'},
-          { id: 6, title: 'Audio 6', description: '...', image: '...'},
-          { id: 7, title: 'Audio 7', description: '...', image: '...'},
-          { id: 8, title: 'Audio 8', description: '...', image: '...'},
-          { id: 9, title: 'Audio 9', description: '...', image: '...'},
-          { id: 10, title: 'Audio 10', description: '...', image: '...'},
-          { id: 11, title: 'Audio 11', description: '...', image: '...'},
-          { id: 12, title: 'Audio 12', description: '...', image: '...'},
-          { id: 13, title: 'Audio 13', description: '...', image: '...'},
-          { id: 14, title: 'Audio 14', description: '...', image: '...'},
-          { id: 15, title: 'Audio 15', description: '...', image: '...'},
-          { id: 16, title: 'Audio 16', description: '...', image: '...'},
-          { id: 17, title: 'Audio 17', description: '...', image: '...'},
-          { id: 18, title: 'Audio 18', description: '...', image: '...'},
-          { id: 19, title: 'Audio 19', description: '...', image: '...'},
-          { id: 20, title: 'Audio 20', description: '...', image: '...'},
-          { id: 21, title: 'Audio 21', description: '...', image: '...'},
-          { id: 22, title: 'Audio 22', description: '...', image: '...'},
-          { id: 23, title: 'Audio 23', description: '...', image: '...'},
-          { id: 24, title: 'Audio 24', description: '...', image: '...'},
-          { id: 25, title: 'Audio 25', description: '...', image: '...'},
-        ]}
+      {
+        title: 'Hebelpunkte / Tools', items: [
+          {id: 1, title: 'Audio 1', description: '...', speaker:'..', duration: '..'},
+          {id: 2, title: 'Audio 2', description: '...', speaker:'..', duration: '..'},
+          {id: 3, title: 'Audio 3', description: '...', speaker:'..', duration: '..'},
+          {id: 4, title: 'Audio 4', description: '...', speaker:'..', duration: '..'},
+          {id: 5, title: 'Audio 5', description: '...', speaker:'..', duration: '..'},
+          {id: 6, title: 'Audio 6', description: '...', speaker:'..', duration: '..'},
+          {id: 7, title: 'Audio 7', description: '...', speaker:'..', duration: '..'},
+          {id: 8, title: 'Audio 8', description: '...', speaker:'..', duration: '..'},
+          {id: 9, title: 'Audio 9', description: '...', speaker:'..', duration: '..'},
+          {id: 10, title: 'Audio 10', description: '...', speaker:'..', duration: '..'},
+        ]
+      },
     ]);
 
-    return { categories, toggleFavourite, getCategoryColor };
+    return {categories: mainCategories, toggleFavourite, toggleSearchbar, favoriteStore, getStripeGradient};
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.items-scroll-area {
-  height: 220px; /* Adjust as needed */
-}
-.my-card {
-  width: 200px; /* Adjust as needed */
-}
-.my-card:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  transform: scale(0.95);
-}
+
 </style>

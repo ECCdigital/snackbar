@@ -11,11 +11,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
 
-export default {
-
-};
 </script>
 
 <style lang="scss" scoped>

@@ -5,7 +5,7 @@ import messages from 'src/i18n'
 export default boot(({ app }) => {
   const i18n = createI18n({
     locale: 'en-US',
-    globalInjection: true,
+    legacy: false, // you must set `false`, to use Composition API for Vue 3
     messages
   })
 

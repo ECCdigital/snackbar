@@ -1,0 +1,11 @@
+services:
+  snackbar-database:
+    image: mongo:latest
+    container_name: snackbar-database-manager
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: app
+        MONGO_INITDB_ROOT_PASSWORD: dev
+        MONGO_INITDB_DATABASE: snackbar

@@ -12,7 +12,7 @@
     <q-footer elevated class="bg-grey-2">
       <q-tabs active-bg-color="primary">
         <q-route-tab
-          to="/home"
+          :to="{name: 'HomePage'}"
           name="HomePage"
           icon="rocket_launch"
           label="Start"
@@ -20,23 +20,23 @@
         />
 
         <q-route-tab
-          to="/library"
+          :to="{name:'LibraryPage'}"
           name="LibraryPage"
           icon="library_music"
           label="Audiothek"
           class="text-dark"
         />
 
-        <q-route-tab
-          to="/favorites"
-          name="FavoritesPage"
-          icon="route"
-          label="Lernpfad"
-          class="text-dark"
-        />
+<!--        <q-route-tab-->
+<!--          :to="{name: 'FavoritesPage'}"-->
+<!--          name="FavoritesPage"-->
+<!--          icon="route"-->
+<!--          label="Lernpfad"-->
+<!--          class="text-dark"-->
+<!--        />-->
 
         <q-route-tab
-          to="/profile"
+          :to="{name: 'ProfilePage'}"
           name="ProfilePage"
           icon="person"
           label="Profil"
@@ -44,7 +44,7 @@
         />
 
         <q-route-tab
-          to="/settings"
+          :to="{name: 'SettingsPage'}"
           name="SettingsPage"
           icon="settings"
           label="Einstellungen"

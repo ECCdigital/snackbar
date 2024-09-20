@@ -4,14 +4,16 @@ const parsedCorsOrigin = corsOrigin.split(",").map((origin) => origin.trim());
 
 const corsOptions = {
   credentials: true,
-  origin: parsedCorsOrigin,
+  origin: "http://192.168.178.109" || parsedCorsOrigin,
   methods: ["GET", "PUT", "POST", "DELETE"],
   allowedHeaders: [
     "X-Requested-With",
     "X-HTTP-Method-Override",
     "Content-Type",
     "Accept",
+    "Content-Security-Policy",
   ],
+
 };
 
-module.exports = cors(corsOptions);
+export default cors(corsOptions);

@@ -1,48 +1,90 @@
-<script setup>
-
-</script>
-
 <template>
   <q-page class="q-pa-md bg-grey-1">
-    <q-card class="bg-grey-3">
+    <q-card v-if="user" class="bg-grey-3" style="margin: min(30px)">
+      <q-card-section>
+        <div class="text-h6 text-dark">Profil</div>
+      </q-card-section>
+      <q-separator spaced inset/>
       <q-item>
         <q-item-section avatar>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
-          </q-avatar>
+          <q-avatar icon="person" size="xl"/>
         </q-item-section>
-
         <q-item-section>
-          <q-item-label class="text-h6">John Doe</q-item-label>
-          <q-item-label caption>@johndoe</q-item-label>
+          <q-list>
+            <q-item-label header class="text-primary">Nutzerdaten</q-item-label>
+            <q-item>
+              <q-item-section>
+                <q-item-label>Name</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-item-label>{{ user.username }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item>
+              <q-item-section>
+                <q-item-label>E-Mail</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-item-label>{{ user.email }}</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item-label header class="text-primary">Optionen</q-item-label>
+            <q-item>
+              <q-btn
+                label="Passwort ändern"
+              />
+            </q-item>
+            <q-item>
+              <q-btn
+                @click="handleLogout"
+                label="Logout"
+              />
+            </q-item>
+          </q-list>
         </q-item-section>
       </q-item>
-
-      <q-card-section>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Nulla vitae mauris ac nulla dictum volutpat.
-      </q-card-section>
-
-      <q-separator />
-
-      <q-list dense>
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon color="primary" name="email" />
-          </q-item-section>
-          <q-item-section>johndoe@example.com</q-item-section>
-        </q-item>
-
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon color="primary" name="phone" />
-          </q-item-section>
-          <q-item-section>+1 (123) 456-7890</q-item-section>
-        </q-item>
-      </q-list>
     </q-card>
+    <div v-else>No valid user profile found.</div>
   </q-page>
 </template>
+
+<script>
+import {onMounted} from 'vue';
+import {useRouter} from "vue-router";
+import {useAuthStore} from "stores/auth";
+import {useUserStore} from "stores/user";
+import {storeToRefs} from "pinia";
+
+export default {
+  setup() {
+    const authStore = useAuthStore();
+    const userStore = useUserStore();
+    const router = useRouter();
+    const {user} = storeToRefs(userStore);
+    const {users} = storeToRefs(userStore);
+
+    onMounted(async () => {
+      try {
+        await userStore.fetchUser();
+        await userStore.fetchUsers();
+        console.log('user:', user);
+        console.log('users:', users)
+
+      } catch (error) {
+        console.error('Error in setup:', error);
+      }
+    });
+
+    const handleLogout = () => {
+      authStore.logout();
+      router.push({name: 'LoginPage'});
+    };
+
+    return {handleLogout, authStore, userStore, user, users};
+  },
+};
+
+</script>
 
 <style scoped>
 

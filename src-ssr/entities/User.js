@@ -2,12 +2,14 @@ class User {
   constructor(
     id,
     email,
+    username,
     password = "",
     isVerified = false,
   ) {
     if (!email) throw new Error("Email is required");
 
     this.id = id;
+    this.username = username;
     this.email = email;
     this.password = password;
     this.isVerified = isVerified;
@@ -15,7 +17,6 @@ class User {
 
   static schema () {
     return {
-      id: { type: String, required: true },
       username: { type: String, required: true },
       email: { type: String, required: true },
       password: { type: String, required: true },
@@ -28,4 +29,4 @@ class User {
   }
 }
 
-module.exports = User;
+export default User;

@@ -1,70 +1,46 @@
 <template>
   <q-page class="bg-grey-1">
-    <div class="q-col-gutter-md q-ma-xl">
-      <div class="col-6">
-        <q-img src="../assets/Corporate Flow_Logo.jpg">
-          <div class="absolute-bottom text-subtitle1 text-center">
-            Corporate Flow App
-          </div>
-        </q-img>
+
+      <div class="q-col-gutter-md q-ma-xl">
+        <div class="col-6">
+          <q-img src="../assets/snackbar_logo_nobg.png" class="flex"/>
+        </div>
+        <q-card class="bg-grey-3 flex flex-center">
+        <div class="col-6 text-h6 text-center">
+          Willkommen bei ECC Audio!
+        </div>
+        <div class="col-6 text-h6 text-center">
+          Hier findest du eine Auswahl an spannenden und informativen Podcasts mit unseren Coaches.
+        </div>
+        <div class="col-6 text-h6 text-center">
+          Viel Spaß!
+        </div>
+        </q-card>
       </div>
-    </div>
-    <q-item>
-      <q-item-section>
-        <q-item-label header class="text-h5 text-primary">Willkommen!</q-item-label>
-        <q-separator spaced/>
-        <q-scroll-area class="items-scroll-area">
-          <div class="row no-wrap q-gutter-sm">
-            <q-item
-              v-for="(item, index) in [1,2,3,4,5]"
-              :key="index"
-              style="width: 300px; margin: 0"
-            >
-              <q-card class="my-card">
-                <q-card-section>
-                  <div class="text-h6 text-dark">Titel</div>
-                  <q-separator spaced/>
-                  <div class="text-caption text-grey">Beschreibung</div>
-                  <q-separator spaced/>
-                  <div class="text-dark">Sprecher | Dauer</div>
-                </q-card-section>
-              </q-card>
-            </q-item>
-          </div>
-        </q-scroll-area>
-      </q-item-section>
-    </q-item>
+
+    <!-- <LibraryPage class="q-mt-lg" /> -->
   </q-page>
 </template>
 
 <script>
-import {ref} from 'vue';
-import {onMounted} from 'vue';
-import {useFavoritesStore} from "stores/favorites";
-import axios from "axios";
+import {ref, onMounted} from 'vue';
+import {api} from "boot/axios";
 
 export default {
-  setup() {
-    const favoriteStore = useFavoritesStore();
 
-    const personalItems = ref([
-      {
-        items: [
-          {
-            id: 1,
-            title: 'Item 1',
-            description: 'Description 1',
-            isFavourite: true,
-            speaker: 'Speaker 1',
-            duration: '1:00'
-          },
-          {id: 2, title: 'Item 2', description: 'Description 2', isFavourite: true},
-          {id: 3, title: 'Item 3', description: 'Description 3', isFavourite: false},
-          {id: 4, title: 'Item 4', description: 'Description 4', isFavourite: false},
-          {id: 5, title: 'Item 5', description: 'Description 5', isFavourite: false},
-        ]
+  setup() {
+
+    onMounted(async () => {
+      try {
+        const response = await api.get('/api/audio');
+
+      } catch (error) {
+        console.error('Fehler beim Laden der Audiodaten:', error);
+        return error;
       }
-    ]);
+    });
+
+    return {};
   },
 };
 </script>

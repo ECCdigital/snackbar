@@ -3,21 +3,19 @@ import { defineStore } from 'pinia';
 export const useFavoritesStore = defineStore('favorites', {
   state: () => ({
     favorites: [],
-    currentAudio: null, // Store the current audio item
-    isLoading: true,
   }),
   actions: {
-    // ... (Ihre bestehenden Aktionen: addFavorite, removeFavorite, isFavorite, etc.)
-    setCurrentAudio(audio) {
-      this.currentAudio = audio;
+    isFavorite(audioItemId) {
+      return this.favorites.some(item => item === audioItemId);
+    },
+    async addFavorite(audioItem) {
+      if (!this.isFavorite(audioItem.id)) {
+        this.favorites.push(audioItem);
+      }
+    },
+    async removeFavorite(audioItem) {
+      this.favorites = this.favorites.filter(item => item !== audioItem);
     },
   },
-  $subscribe: (mutation, state) => {
-    // Speichern Sie den gesamten Zustandsbaum in localStorage
-    localStorage.setItem('favorites', JSON.stringify(state));
-  },
-  setAudioList(audioData) {
-    this.audioList = audioData;
-    this.isLoading = false;
-  }
+  persist: true,
 });

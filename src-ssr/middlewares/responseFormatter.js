@@ -1,10 +1,10 @@
 import ERROR_CODES from "app/src-ssr/constants/errorCodes";
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
   res.success = (data = {}, additionalInfo = {}) => {
     return res.status(200).json({
       success: true,
-      data,
+      content: data,
       ...additionalInfo,
     });
   };

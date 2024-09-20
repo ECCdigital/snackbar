@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const logger = import("../middlewares/logger");
+import {logger} from "../middlewares/logger";
 
 class DatabaseManager {
   constructor() {
@@ -35,6 +35,8 @@ class DatabaseManager {
         dbName: dbName,
       });
 
+      mongoose.set("debug", true);
+
       mongoose.connection.on("connected", () => {
         logger.info(`Mongoose connected to database ${dbName}.`);
       });
@@ -55,4 +57,4 @@ class DatabaseManager {
   }
 }
 
-module.exports = DatabaseManager;
+export default DatabaseManager;

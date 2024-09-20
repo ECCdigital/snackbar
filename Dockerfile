@@ -14,7 +14,7 @@ RUN npm i --only=dev
 COPY src .
 
 # Quasar CLI global installieren
-RUN npm install -g @quasar/cli
+RUN npm update -g @quasar/cli
 
 # Quasar Build ausführen
 RUN quasar build -m ssr

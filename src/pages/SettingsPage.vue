@@ -1,6 +1,6 @@
 <template>
-  <q-page class="q-pa-md bg-grey-1">
-    <q-card class="bg-grey-3" style="margin: min(30px)">
+  <q-page class="flex flex-center">
+    <q-card class="bg-grey-3" style="width: min(400px)">
       <q-card-section>
         <div class="text-h6 text-dark">Einstellungen</div>
       </q-card-section>
@@ -13,6 +13,7 @@
           </q-item-section>
           <q-item-section side>
             <q-toggle v-model="notificationsEnabled" />
+            <div class="text-dark text-subtitle1">(Bald verfügbar)</div>
           </q-item-section>
         </q-item>
         <q-separator spaced inset/>
@@ -22,7 +23,8 @@
             <q-item-label>Dunkler Modus</q-item-label>
           </q-item-section>
           <q-item-section side>
-            <q-toggle v-model="darkModeEnabled" />
+            <q-btn flat round @click="toggleDarkMode" :icon="darkModeEnabled ? 'brightness_2' : 'brightness_5'" />
+            <div class="text-dark text-subtitle1">(Bald verfügbar)</div>
           </q-item-section>
           <q-space/>
         </q-item>
@@ -39,7 +41,11 @@ export default {
     const notificationsEnabled = ref(true);
     const darkModeEnabled = ref(false);
 
-    return { notificationsEnabled, darkModeEnabled };
+    const toggleDarkMode = () => {
+      darkModeEnabled.value = !darkModeEnabled.value;
+    };
+
+    return { notificationsEnabled, darkModeEnabled, toggleDarkMode};
   },
 };
 </script>

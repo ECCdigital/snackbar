@@ -1,6 +1,3 @@
-import MainLayout from "layouts/MainLayout.vue";
-import LoginLayout from "layouts/LoginLayout.vue";
-
 const routes = [
   {
     path: '/',

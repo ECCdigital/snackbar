@@ -11,6 +11,7 @@
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
+    "build-ssr": "quasar build -m ssr",
     "start:ssr": "node dist/ssr/index.js"
   },
   "dependencies": {

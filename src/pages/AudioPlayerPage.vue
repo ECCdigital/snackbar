@@ -18,7 +18,10 @@
           </div>
       </q-card-section>
     </q-card>
-    <q-footer elevated class="fixed-bottom bg-grey-2">
+    <q-footer elevated class="fixed-bottom bg-grey-2" style="padding-top: 10px">
+      <div class="flex flex-center text-dark text-h6" style="padding: 5px">
+        {{ audioItem.title }}
+      </div>
       <vue-audio-player
         ref="audioPlayer"
         :audio-list="audioList"

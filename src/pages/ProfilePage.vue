@@ -1,6 +1,6 @@
 <template>
-  <q-page class="q-pa-md bg-grey-1">
-    <q-card v-if="user" class="bg-grey-3" style="margin: min(30px)">
+  <q-page class="flex flex-center">
+    <q-card v-if="user" class="bg-grey-3" style="width: min(400px)">
       <q-card-section>
         <div class="text-h6 text-dark">Profil</div>
       </q-card-section>

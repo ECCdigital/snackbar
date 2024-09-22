@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <q-card class="bg-grey-3" style="width: min(300px)">
+    <q-card class="bg-grey-3" style="width: min(400px)">
       <q-card-section>
         <q-img src="../assets/snackbar_logo_nobg.png" class="full-width"/>
       </q-card-section>

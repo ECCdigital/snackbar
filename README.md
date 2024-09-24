@@ -52,14 +52,4 @@ quasar dev -m ssr
 - Android App
 ```bash
 quasar dev -m capacitor -T android
-```
-
-### Die App für die Produktion bauen
-- Server Side Rendering
-```bash
-quasar build -m ssr
-```
-- Android App
-```bash
-quasar build -m capacitor -T android
-```
+``` 

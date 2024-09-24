@@ -24,4 +24,4 @@ const loginRateLimit = (req, res, next) => {
   next();
 };
 
-module.exports = loginRateLimit;
+export default loginRateLimit;

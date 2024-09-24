@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import User from '../classes/User';
+import bcrypt from 'bcryptjs';
+import User from '../entities/User';
 
 const Schema = mongoose.Schema;
 
@@ -16,9 +16,10 @@ UserSchema.pre("save", async function(next) {
 UserSchema.methods.isValidPassword = async function(password) {
   const user = this;
   return await bcrypt.compare(password, user.password);
+
 };
 
-UserSchema.index({ email: 1 }, { unique: true });
+UserSchema.index({ username: 1 }, { unique: true });
 
 const UserModel = mongoose.model('User', UserSchema);
 

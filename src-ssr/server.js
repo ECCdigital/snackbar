@@ -14,7 +14,7 @@ import compression from 'compression'
 import {
   ssrClose,
   ssrCreate,
-  ssrListen,
+  ssrListen, ssrMiddleware,
   ssrRenderPreloadTag,
   ssrServeStaticContent
 } from 'quasar/wrappers'
@@ -29,7 +29,9 @@ import mongoSanitize from 'express-mongo-sanitize'
 import error from './middlewares/error'
 import cors from './middlewares/cors'
 import responseFormatter from './middlewares/responseFormatter'
-
+import authRouter from "app/src-ssr/platform/auth/authRouter";
+import userRouter from "app/src-ssr/platform/api/userRouter";
+import audioRouter from "app/src-ssr/platform/api/audioRouter";
 /**
  * Create your webserver and return its instance.
  * If needed, prepare your webserver to receive
@@ -51,10 +53,19 @@ export const create = ssrCreate((/* { ... } */) => {
     app.use(morganMiddleware);
   }
 
-  app.use(helmet());
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      mediaSrc: ["'self'", "https://cloud.e-c-crew.dev"],
+    }
+  }));
+
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(bodyParser.text());
+
+  app.use(sessionMiddleware);
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use(cors);
   app.use(mongoSanitize());
@@ -64,11 +75,9 @@ export const create = ssrCreate((/* { ... } */) => {
 
   app.use(responseFormatter);
 
-  app.use(sessionMiddleware);
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  app.use("/api/users", require("./platform/api/userRouter"));
+  app.use("/api/users", userRouter);
+  app.use("/auth", authRouter);
+  app.use("/api/audio", audioRouter);
 
   return app;
 });
@@ -90,9 +99,9 @@ export const listen = ssrListen(async ({ app, port, isReady }) => {
 
   return app.listen(port, () => {
     if (process.env.PROD) {
-      logger.info('Server listening at port ' + port);
+      logger.info('Server listening at port: ' + port);
     } else {
-      logger.info('Server listening at http://localhost: ' + port);
+      logger.info(`Server listening at ${process.env.API_BASE_URL}`);
     }
   })
 })

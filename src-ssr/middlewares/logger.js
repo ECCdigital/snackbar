@@ -20,4 +20,4 @@ const morganMiddleware = morgan("combined", {
   },
 });
 
-module.exports = { logger, morganMiddleware };
+export { logger, morganMiddleware };

@@ -1,6 +1,6 @@
-import logger from "./logger.js";
+import {logger} from "./logger.js";
 
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
   logger.error(err); // Loggen des Fehlers
 
   if (res.headersSent) {

@@ -1,26 +1,122 @@
 // app global css in SCSS form
-
-.items-scroll-area {
-  height: 200px;
+.q-card {
+  width: 100%;
+  max-width: 600px;
 }
 
 .my-card {
   width: 250px;
+  height: 155px;
   border-radius: 5px;
 }
 
-.my-card-title {
+.my-card .my-card-title {
   display: flex;
   height: 20px;
-  v-bind: getStripeClass
 }
 
-.category-field {
-  background-image: linear-gradient(-45deg,
-    white 50%, #940023 50%,
-  ) !important;
-}
-
-.my-card-main {
+.my-card .my-card-main {
   background-color: lightsteelblue;
+  height: 125px;
+}
+
+.fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 10px;
+}
+
+.text-purple-1 {
+  color: #9c0a7d !important;
+}
+.bg-purple-1 {
+  background-color: #9c0a7d !important;
+}
+.text-red-1 {
+  color: #e20020 !important;
+}
+.bg-red-1 {
+  background-color: #e20020 !important;
+}
+.text-blue-1 {
+  color: #006ab3 !important;
+}
+.bg-blue-1 {
+  background-color: #006ab3 !important;
+}
+.text-orange-1 {
+  color: #f07d00 !important;
+}
+.bg-orange-1 {
+  background-color: #f07d00 !important;
+}
+.text-green-1 {
+  color: #68b022 !important;
+}
+.bg-green-1 {
+  background-color: #68b022 !important;
+}
+.text-yellow-1 {
+  color: #fecc00 !important;
+}
+.bg-yellow-1 {
+  background-color: #fecc00 !important;
+}
+.text-teal-1 {
+  color: #1ba77f !important;
+}
+.bg-teal-1 {
+  background-color: #1ba77f !important;
+}
+.text-brown-1 {
+  color: #bbaf91 !important;
+}
+.bg-brown-1 {
+  background-color: #bbaf91 !important;
+}
+
+.body--light {
+  --q-color-dark: #000;
+  --q-color-light: #fff;
+  --q-color-primary: #1976D2;
+  --q-color-secondary: #26A69A;
+  --q-color-accent: #9C27B0;
+  --q-color-positive: #21BA45;
+  --q-color-negative: #C10015;
+  --q-color-info: #31CCEC;
+  --q-color-warning: #F2C037;
+  --q-color-purple-1: #9c0a7d;
+  --q-color-red-1: #e20020;
+  --q-color-blue-1: #006ab3;
+  --q-color-orange-1: #f07d00;
+  --q-color-green-1: #68b022;
+  --q-color-yellow-1: #fecc00;
+  --q-color-teal-1: #1ba77f;
+  --q-color-brown-1: #bbaf91;
+  --q-color-dark-1: #1D1D1D;
+  --q-color-dark-page: #121212;
+}
+
+.body--dark {
+  --q-color-dark: #fff;
+  --q-color-light: #000;
+  --q-color-primary: #1976D2;
+  --q-color-secondary: #26A69A;
+  --q-color-accent: #9C27B0;
+  --q-color-positive: #21BA45;
+  --q-color-negative: #C10015;
+  --q-color-info: #31CCEC;
+  --q-color-warning: #F2C037;
+  --q-color-purple-1: #9c0a7d;
+  --q-color-red-1: #e20020;
+  --q-color-blue-1: #006ab3;
+  --q-color-orange-1: #f07d00;
+  --q-color-green-1: #68b022;
+  --q-color-yellow-1: #fecc00;
+  --q-color-teal-1: #1ba77f;
+  --q-color-brown-1: #bbaf91;
+  --q-color-dark-1: #1D1D1D;
+  --q-color-dark-page: #121212;
 }

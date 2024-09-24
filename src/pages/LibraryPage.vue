@@ -1,165 +1,260 @@
 <template>
-  <q-page class="bg-grey-1">
-    <q-fab
-      @click="toggleSearchbar"
-      class="fixed-top-right q-ma-sm"
-      icon="search"
-    />
-    <q-infinite-scroll style="height: 150vh; max-width: 100vw;">
-      <q-list>
-        <q-item v-for="(category, index) in categories" :key="index">
-          <q-item-section>
-            <q-item-label header class="text-h5 text-primary">{{ category.title }}</q-item-label>
-            <q-scroll-area  class="items-scroll-area">
-              <div class="flex row no-wrap q-col-gutter-xs">
-                <q-item
-                  v-for="(item, itemIndex) in category.items"
-                  :key="itemIndex"
-                >
-                  <q-card class="my-card" flat bordered @click="() => {
-                    favoriteStore.setCurrentAudio(item);
-                    $router.push({name: 'AudioPlayerPage'});
-                  }">
-                    <q-card-section class="flex my-card-title" :style="{backgroundImage: getStripeGradient(item.categories)}">
-                    </q-card-section>
-                    <q-card-section class="my-card-main">
-                      <div class="absolute-top-right">
-                        <q-btn
-                          round
-                          flat
-                          :icon="item.isFavourite ? 'favorite' : 'favorite_border'"
-                          :color="item.isFavourite ? 'red' : 'grey-5'"
-                          @click.stop="toggleFavourite(item)"
-                        />
-                      </div>
-                      <div class="text-h6 text-dark">{{ item.title }}</div>
-                      <div class="text-caption text-grey">{{ item.description }}</div>
-                      <div class="text-dark">{{ item.speaker }}</div>
-                      <div class="text-dark">{{ item.duration }}</div>
-                    </q-card-section>
-                  </q-card>
-                </q-item>
-              </div>
-            </q-scroll-area>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-infinite-scroll>
+  <q-header elevated class="bg-grey-1 ">
+    <q-toolbar>
+      <q-toolbar-title class="text-h5 text-dark text-center">Audiothek</q-toolbar-title>
+      <q-btn dense flat round color="black" icon="info" @click="toggleLegend"/>
+    </q-toolbar>
+  </q-header>
+
+  <q-drawer
+    v-model="isLegendOpen"
+    side="right"
+    elevated
+    :breakpoint="300"
+    :width="250"
+  >
+    <div class="text-center text-h6 text-dark q-pa-sm">Farblehre</div>
+    <div v-for="item in legendData" :key="item.title">
+      <q-item>
+        <q-item-section avatar>
+          <q-icon name="circle" :color="item.color" size="md"/>
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>{{ item.title }}</q-item-label>
+        </q-item-section>
+        <q-item-section>
+          <q-checkbox size="md" v-model="checkedTitle" :val="item.title" :checkedTitle="item.title"/>
+        </q-item-section>
+      </q-item>
+    </div>
+    <div class="text-subtitle1 text-dark text-center q-pa-md">
+      <q-icon name="info" size="md" color="primary"/>
+      (Filter bald verfügbar)
+    </div>
+  </q-drawer>
+  <q-page class="q-pa-md bg-grey-1">
+    <div v-if="audioItems && audioItems.length > 0">
+      <section v-for="(category, catName) in groupedAudioItems" :key="catName">
+        <div class="q-pa-md text-dark text-h6">{{ catName }}</div>
+        <q-virtual-scroll :items="category.items" v-slot="{ item, index}" virtual-scroll-horizontal>
+          <div class="no-wrap flex q-gutter-md q-pa-md" :key="index">
+            <q-card class="my-card" v-ripple @click="handleClick(item)">
+              <q-card-section :style="{backgroundImage: getStripeGradient(item.tags)}"
+                              class="my-card-title">
+              </q-card-section>
+              <q-card-section class="my-card-main">
+                <q-btn class="absolute-bottom-right" flat round
+                       color="red" :icon="favoriteStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
+                       @click.stop="toggleFavourite(item)"/>
+                <div class="text-bold text-dark">{{ item.title }}</div>
+                <q-separator spaced/>
+                <div class="text-dark">{{ item.speaker }}</div>
+                <div class="text-dark">{{ convertSecondsToMinutes(item.duration) }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-virtual-scroll>
+      </section>
+    </div>
+
+    <div v-else class="q-pa-md text-h6 text-center">Keine Audios gefunden</div>
   </q-page>
 </template>
 
 <script>
-import {ref} from 'vue';
-import {useFavoritesStore} from '../stores/favorites'; // Passen Sie den Pfad bei Bedarf an
-
+import
+{ref, onMounted, computed} from 'vue';
+import {useRouter} from 'vue-router';
+import {useFavoritesStore} from 'stores/favorites';
+import {useAudioStore} from "stores/audio";
+import {storeToRefs} from "pinia";
+import useHelper from "src/services/helper";
+import {colors} from 'quasar';
 
 export default {
-  methods: {
-    handleClick(item) {
-      this.useRouter.push({name: 'AudioPlayerPage'});
-    },
 
-  },
   setup() {
-    const toggleFavourite = (item) => {
-      item.isFavourite = !item.isFavourite;
-      // Update favourite status in your data source (API or local storage)
-      updateFavouriteStatus(item.id, item.isFavourite);
-    };
-
-    // Placeholder function (replace with your actual implementation)
-    async function updateFavouriteStatus(itemId, isFavourite) {
-      // Update logic in your data source...
-      console.log(`Item ${itemId} is now ${isFavourite ? 'favourite' : 'not favourite'}`);
-    }
-
-    const toggleSearchbar = () => {
-      console.log('Searchbar toggled');
-
-    };
-
     const favoriteStore = useFavoritesStore();
+    const audioStore = useAudioStore();
+    const router = useRouter();
+    const {audioItems} = storeToRefs(audioStore);
+    const {audioItem} = storeToRefs(audioStore);
+    const groupedAudioItems = ref({});
+    const searchQuery = ref('');
+    const itemCategory = ref('');
+    const itemTags = ref([]);
+    const favorites = ref([]);
 
-    const getStripeGradient = (itemCategories) => {
-      if (!itemCategories || itemCategories.length === 0) {
-        return 'none';
+    const convertSecondsToMinutes = useHelper.convertSecondsToMinutes;
+    const isLegendOpen = ref(false);
+    const {getPaletteColor} = colors;
+
+    const generateDummyData = (count) => {
+      const categories = ['Allgemeines', 'Main 7', 'Corporate Flow'];
+      const tags = ['Holistisch', 'Systemisch', 'Gemeinschaft', 'Erfolg', 'Ordnung', 'Macht', 'Zugehörigkeit', 'Überleben'];
+      const dummyData = [];
+      for (let i = 0; i < count; i++) {
+        const numTags = Math.floor(Math.random() * tags.length) + 1;
+        const selectedTags = [];
+
+        for (let j = 0; j < numTags; j++) {
+          const randomTag = tags[Math.floor(Math.random() * tags.length)];
+          if (!selectedTags.includes(randomTag)) {
+            selectedTags.push(randomTag);
+          }
+        }
+
+        dummyData.push({
+          id: `dummy-${i}`,
+          title: `Dummy Title ${i}`,
+          description: `Dummy Description ${i}`,
+          url: `http://dummy.url/${i}`,
+          duration: Math.floor(Math.random() * 300),
+          category: categories[Math.floor(Math.random() * categories.length)],
+          tags: selectedTags,
+          speaker: `Speaker ${i}`,
+          isFavorite: false,
+        });
       }
-
-      // Farben extrahieren und Gradienten-Stopps erstellen
-      const gradientStops = itemCategories.map((category, index) => {
-        const color = categoryColors[category] || 'grey'; // Standardfarbe, falls keine Übereinstimmung gefunden wird
-        //const startPercent = (100 / itemCategories.length) * index;
-        //const endPercent = (100 / itemCategories.length) * (index + 1);
-        return `${color} 50%, ${color} 50%`;
-      }).join(', ');
-
-      // Gradient erstellen
-      return `linear-gradient(-45deg, ${gradientStops})`;
+      return dummyData;
     };
+
+    onMounted(async () => {
+      try {
+        await audioStore.fetchAudioItems();
+        audioItems.value.forEach((item) => {
+          itemCategory.value = item.category;
+        });
+        const dummyData = generateDummyData(10);
+        audioItems.value = [...audioItems.value, ...dummyData];
+
+        groupedAudioItems.value = groupAudioItemsByCategory(audioItems.value);
+
+        audioItems.value.forEach((item) => {
+          itemTags.value.push(item.tags);
+        });
+
+      } catch (error) {
+        console.error('Fehler beim Laden der Audiodaten:', error);
+      }
+      isLegendOpen.value = false;
+    });
 
     const categoryColors = {
-      'Zugehörigkeit': 'purple',
-      'Macht': 'red',
-      'Ordnung': 'blue',
-      'Erfolg': 'orange',
-      'Gemeinschaft': 'green',
-      'Systemisch': 'yellow',
-      'Holistisch': 'teal',
-      'Überleben': 'brown',
+      'Holistisch': '#6aa3a3',
+      'Systemisch': '#f7d766',
+      'Gemeinschaft': '#507f6a',
+      'Erfolg': '#e38044',
+      'Ordnung': '#194181',
+      'Macht': '#9a1f33',
+      'Zugehörigkeit': '#7d4c7a',
+      'Überleben': '#68251b',
     };
 
-    const mainCategories = ref([
-      {
-        title: 'Corporate Flow',
-        items: [
-          {id: 1, title: 'Audio 1', description: '...', speaker: 'Kerstin', duration: '3:50 min', categories: ['Macht']},
-          {id: 2, title: 'Audio 2', description: '...', speaker: '..', duration: '..', categories: ['Ordnung', 'Zugehörigkeit']},
-          {id: 3, title: 'Audio 3', description: '...', speaker: '..', duration: '..', categories: ['Gemeinschaft', 'Erfolg']},
-          {id: 4, title: 'Audio 4', description: '...', speaker: '..', duration: '..', categories: ['Systemisch', 'Holistisch']},
-          {id: 5, title: 'Audio 5', description: '...', speaker: '..', duration: '..'},
-          {id: 6, title: 'Audio 6', description: '...', speaker: '..', duration: '..'},
-          {id: 7, title: 'Audio 7', description: '...', speaker: '..', duration: '..'},
-          {id: 8, title: 'Audio 8', description: '...', speaker: '..', duration: '..'},
-          {id: 9, title: 'Audio 9', description: '...', speaker: '..', duration: '..'},
-          {id: 10, title: 'Audio 10', description: '...', speaker: '..', duration: '..'},
-        ]
-      },
-      {
-        title: 'Main 7',
-        items: [
-          {id: 1, title: 'Audio 1', description: '...', speaker:'..', duration: '..'},
-          {id: 2, title: 'Audio 2', description: '...', speaker:'..', duration: '..'},
-          {id: 3, title: 'Audio 3', description: '...', speaker:'..', duration: '..'},
-          {id: 4, title: 'Audio 4', description: '...', speaker:'..', duration: '..'},
-          {id: 5, title: 'Audio 5', description: '...', speaker:'..', duration: '..'},
-          {id: 6, title: 'Audio 6', description: '...', speaker:'..', duration: '..'},
-          {id: 7, title: 'Audio 7', description: '...', speaker:'..', duration: '..'},
-          {id: 8, title: 'Audio 8', description: '...', speaker:'..', duration: '..'},
-          {id: 9, title: 'Audio 9', description: '...', speaker:'..', duration: '..'},
-          {id: 10, title: 'Audio 10', description: '...', speaker:'..', duration: '..'},
-        ]
-      },
-      {
-        title: 'Hebelpunkte / Tools', items: [
-          {id: 1, title: 'Audio 1', description: '...', speaker:'..', duration: '..'},
-          {id: 2, title: 'Audio 2', description: '...', speaker:'..', duration: '..'},
-          {id: 3, title: 'Audio 3', description: '...', speaker:'..', duration: '..'},
-          {id: 4, title: 'Audio 4', description: '...', speaker:'..', duration: '..'},
-          {id: 5, title: 'Audio 5', description: '...', speaker:'..', duration: '..'},
-          {id: 6, title: 'Audio 6', description: '...', speaker:'..', duration: '..'},
-          {id: 7, title: 'Audio 7', description: '...', speaker:'..', duration: '..'},
-          {id: 8, title: 'Audio 8', description: '...', speaker:'..', duration: '..'},
-          {id: 9, title: 'Audio 9', description: '...', speaker:'..', duration: '..'},
-          {id: 10, title: 'Audio 10', description: '...', speaker:'..', duration: '..'},
-        ]
-      },
-    ]);
+    const legendColors = {
+      'Holistisch': 'teal-1',
+      'Systemisch': 'yellow-1',
+      'Gemeinschaft': 'green-1',
+      'Erfolg': 'orange-1',
+      'Ordnung': 'blue-1',
+      'Macht': 'red-1',
+      'Zugehörigkeit': 'purple-1',
+      'Überleben': 'brown-1',
+    };
 
-    return {categories: mainCategories, toggleFavourite, toggleSearchbar, favoriteStore, getStripeGradient};
+    const groupAudioItemsByCategory = (items) => {
+      return items.reduce((groupedItems, item) => {
+        if (!groupedItems[item.category]) {
+          groupedItems[item.category] = {items: []};
+        }
+        groupedItems[item.category].items.push(item);
+        return groupedItems;
+      }, {});
+    };
+
+    const getCategoryColor = (tag) => {
+      //console.log('Kategorie:', category);
+      //console.log('Farben:', categoryColors);
+      return categoryColors[tag] || 'grey';
+    };
+
+    const getStripeGradient = (itemTags) => {
+      //console.log('getStripeGradient');
+      if (!itemTags || itemTags.length === 0) {
+        return 'grey';
+      }
+
+      const gradientStops = itemTags.map((tag, index) => {
+        const color = getCategoryColor(tag) || 'grey';
+        const startPercent = (100 / itemTags.length) * index;
+        const endPercent = (100 / itemTags.length) * (index + 1);
+
+        return `${color} ${startPercent}%, ${color} ${endPercent}%`;
+      }).join(', ');
+
+      //console.log(`Gradient: linear-gradient(90deg, ${gradientStops})`);
+      const gradientString = `linear-gradient(90deg, ${gradientStops})`;
+      //console.log('Escaped CSS:', CSS.escape(gradientString));
+
+      //console.log('Gradient:', gradientString);
+      return gradientString
+    };
+
+    const legendData = computed(() => {
+      return Object.entries(legendColors).map(([title, color]) => {
+        return {
+          title,
+          color
+        };
+      });
+    });
+
+    const toggleLegend = () => {
+      isLegendOpen.value = !isLegendOpen.value;
+    };
+
+    const toggleFavourite = (item) => {
+      if (favoriteStore.isFavorite(item.id)) {
+        favoriteStore.removeFavorite(item.id);
+      } else {
+        favoriteStore.addFavorite(item.id);
+      }
+    };
+
+    const handleClick = (item) => {
+      audioStore.setCurrentAudioId(item.id);
+      setTimeout(() => {
+        router.push({name: 'AudioPlayerPage'});
+      }, 300);
+    };
+
+    return {
+      favoriteStore,
+      audioStore,
+      getStripeGradient,
+      router,
+      searchQuery,
+      handleClick,
+      audioItem,
+      audioItems,
+      groupedAudioItems,
+      convertSecondsToMinutes,
+      itemCategory,
+      itemTags,
+      categoryColors,
+      getCategoryColor,
+      toggleFavourite,
+      favorites,
+      isLegendOpen,
+      legendData,
+      toggleLegend,
+      getPaletteColor,
+      checkedTitle: ref(['Holistisch', 'Systemisch', 'Gemeinschaft', 'Erfolg', 'Ordnung', 'Macht', 'Zugehörigkeit', 'Überleben']),
+    };
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
+// $
 </style>

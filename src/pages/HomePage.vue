@@ -1,70 +1,33 @@
 <template>
-  <q-page class="bg-grey-1">
-    <div class="q-col-gutter-md q-ma-xl">
-      <div class="col-6">
-        <q-img src="../assets/Corporate Flow_Logo.jpg">
-          <div class="absolute-bottom text-subtitle1 text-center">
-            Corporate Flow App
-          </div>
-        </q-img>
-      </div>
+  <q-page class="bg-grey-1 flex-center q-pa-md">
+    <div class="q-ma-md q-pa-md">
+      <q-img src="../assets/snackbar_logo_nobg.png"/>
+      <q-card class="flex flex-center bg-grey-3">
+        <q-card-section >
+          <q-list>
+            <div class="text-dark text-h6 text-center">
+              Willkommen bei ECC Audio!
+            </div>
+            <div class="text-dark text-h6 text-center">
+              Hier findest du eine Auswahl an spannenden und informativen Podcasts mit unseren Coaches.
+            </div>
+            <div class="text-dark text-h6 text-center">
+              Viel Spaß!
+            </div>
+          </q-list>
+        </q-card-section>
+      </q-card>
     </div>
-    <q-item>
-      <q-item-section>
-        <q-item-label header class="text-h5 text-primary">Willkommen!</q-item-label>
-        <q-separator spaced/>
-        <q-scroll-area class="items-scroll-area">
-          <div class="row no-wrap q-gutter-sm">
-            <q-item
-              v-for="(item, index) in [1,2,3,4,5]"
-              :key="index"
-              style="width: 300px; margin: 0"
-            >
-              <q-card class="my-card">
-                <q-card-section>
-                  <div class="text-h6 text-dark">Titel</div>
-                  <q-separator spaced/>
-                  <div class="text-caption text-grey">Beschreibung</div>
-                  <q-separator spaced/>
-                  <div class="text-dark">Sprecher | Dauer</div>
-                </q-card-section>
-              </q-card>
-            </q-item>
-          </div>
-        </q-scroll-area>
-      </q-item-section>
-    </q-item>
   </q-page>
 </template>
 
 <script>
-import {ref} from 'vue';
-import {onMounted} from 'vue';
-import {useFavoritesStore} from "stores/favorites";
-import axios from "axios";
 
 export default {
-  setup() {
-    const favoriteStore = useFavoritesStore();
 
-    const personalItems = ref([
-      {
-        items: [
-          {
-            id: 1,
-            title: 'Item 1',
-            description: 'Description 1',
-            isFavourite: true,
-            speaker: 'Speaker 1',
-            duration: '1:00'
-          },
-          {id: 2, title: 'Item 2', description: 'Description 2', isFavourite: true},
-          {id: 3, title: 'Item 3', description: 'Description 3', isFavourite: false},
-          {id: 4, title: 'Item 4', description: 'Description 4', isFavourite: false},
-          {id: 5, title: 'Item 5', description: 'Description 5', isFavourite: false},
-        ]
-      }
-    ]);
+  setup() {
+
+    return {};
   },
 };
 </script>

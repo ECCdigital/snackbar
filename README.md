@@ -1,5 +1,5 @@
 # snackbar
-___
+
 ### ECC Audio Podcast App
 
 Diese App ist im Rahmen der Bachelorarbeit von Timm Lohmann <timm.lohmann@e-c-crew.de> an der FH Kiel entstanden.
@@ -40,7 +40,6 @@ npm install
 ```
 
 ### Den Docker Container für die Datenbank starten
-- Voraussetzung: Docker und Docker Compose sind installiert
 ```bash
 docker-compose up -d
 ```

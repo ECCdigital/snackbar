@@ -1,21 +1,30 @@
 <template>
-  <q-page class="q-pa-md bg-grey-1">
-    <q-toolbar class="q-pa-md">
+  <q-header elevated class="bg-grey-1">
+    <q-toolbar>
       <q-btn flat round color="primary" icon="arrow_back" @click="$router.back()"/>
-      <q-toolbar-title class="text-center text-bold text-h5">Audio Player</q-toolbar-title>
+      <q-toolbar-title class="text-center text-dark text-h5">Audio Player</q-toolbar-title>
     </q-toolbar>
+  </q-header>
 
-    <q-card class="bg-grey-3 flex flex-center">
-      <q-card-section>
-          <div class=" q-pa-md">
-            <div>
-              <div class="text-h5 q-mb-sm">{{ audioItem.title }}</div>
-              <div class="text-subtitle1">{{ audioItem.speaker }}</div>
-              <div class="text-subtitle1">{{ convertSecondsToMinutes(audioItem.duration) }}</div>
-              <q-separator class="q-my-md"/>
-              <div class="text-body1">{{ audioItem.description }}</div>
-            </div>
+  <q-page class="q-pa-md bg-grey-1 flex flex-center">
+    <q-card class="bg-grey-3 q-ma-lg q-pa-sm">
+      <q-card-section class="col-grow content-start items-start">
+        <q-list>
+          <div class="text-h5 q-mb-sm">{{ audioItem.title }}</div>
+          <div class="text-subtitle1">{{ audioItem.speaker }}</div>
+          <div class="text-subtitle1">{{ convertSecondsToMinutes(audioItem.duration) }}</div>
+        </q-list>
+      </q-card-section>
+      <q-separator spaced inset/>
+      <q-card-section >
+        <q-list>
+          <div class="text-h6 text-dark">Beschreibung</div>
+          <div class="q-pa-md">
+            <q-scroll-area style="height: 400px; max-width: 600px">
+              <div class="text-dark text-body1 q-py-xs">{{ audioItem.description }}</div>
+            </q-scroll-area>
           </div>
+        </q-list>
       </q-card-section>
     </q-card>
     <q-footer elevated class="fixed-bottom bg-grey-2" style="padding-top: 10px">

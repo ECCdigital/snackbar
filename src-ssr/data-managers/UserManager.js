@@ -5,20 +5,17 @@ import crypto from "crypto";
 class UserManager {
 
   static async getUsers() {
-    console.log("userModel: ", UserModel);
     const userModels = await UserModel.find();
-    console.log("userModels: ", userModels);
     if (!userModels) return null;
     return userModels.map((userModel) => createUserFromModel(userModel));
   }
 
   static async getUserById(userID) {
-    console.log("userID: ", userID);
     try {
       const userModel = await UserModel.findById(userID);
       return createUserFromModel(userModel);
     } catch (error) {
-      console.log(error);
+      console.error("UserManager - getUserById: ", error);
     }
 
   }

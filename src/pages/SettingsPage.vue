@@ -1,10 +1,11 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="bg-grey-3" style="width: min(400px)">
-      <q-card-section>
+  <q-page class="bg-grey-1 flex flex-center q-pa-md">
+    <q-card class="bg-grey-3 q-ma-lg q-pa-sm">
+      <q-card-section class="col-grow content-start items-start">
         <div class="text-h6 text-dark">Einstellungen</div>
       </q-card-section>
       <q-separator spaced inset/>
+      <q-card-section class="col-grow content-start items-start">
       <q-list>
         <q-item-label header class="text-primary">Benachrichtigungen</q-item-label>
         <q-item>
@@ -29,6 +30,7 @@
           <q-space/>
         </q-item>
       </q-list>
+      </q-card-section>
     </q-card>
   </q-page>
 </template>

@@ -26,7 +26,7 @@ Die App stellt Podcasts zu den Themen Kultur- und Führungskräfteentwicklung be
 ### Abhängigkeiten installieren
 ```bash
 yarn
-# or
+# oder
 npm install
 ```
 

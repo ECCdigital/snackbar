@@ -5,7 +5,8 @@ class AudioItem {
     description,
     url,
     duration,
-    categories,
+    category,
+    tags,
     speaker,
     isFavorite,) {
 
@@ -14,7 +15,8 @@ class AudioItem {
     this.description = description;
     this.url = url;
     this.duration = duration;
-    this.categories = categories;
+    this.category = category;
+    this.tags = tags;
     this.speaker = speaker;
     this.isFavorite = isFavorite;
   }
@@ -25,7 +27,8 @@ class AudioItem {
       description: { type: String, required: true },
       url: { type: String, required: true },
       duration: { type: Number, required: true },
-      categories: { type: [String], required: true },
+      category: { type: String, required: true },
+      tags: { type: [String], required: true },
       speaker: { type: String, required: true },
       isFavorite: { type: Boolean, required: true },
     };

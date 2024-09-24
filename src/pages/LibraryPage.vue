@@ -1,9 +1,7 @@
 <template>
-  <q-header elevated class="bg-primary" height-hint="50">
+  <q-header elevated class="bg-grey-1 ">
     <q-toolbar>
-      <!-- <SearchBar categories="true" @search="filterItems"/> -->
-      <q-toolbar-title class="text-h5 text-dark">Audiothek</q-toolbar-title>
-
+      <q-toolbar-title class="text-h5 text-dark text-center">Audiothek</q-toolbar-title>
       <q-btn dense flat round color="black" icon="info" @click="toggleLegend"/>
     </q-toolbar>
   </q-header>
@@ -15,7 +13,7 @@
     :breakpoint="300"
     :width="250"
   >
-    <div class="text-center text-h6 text-dark" style="padding: 10px">Farblehre</div>
+    <div class="text-center text-h6 text-dark q-pa-sm">Farblehre</div>
     <div v-for="item in legendData" :key="item.title">
       <q-item>
         <q-item-section avatar>
@@ -24,38 +22,43 @@
         <q-item-section>
           <q-item-label>{{ item.title }}</q-item-label>
         </q-item-section>
+        <q-item-section>
+          <q-checkbox size="md" v-model="checkedTitle" :val="item.title" :checkedTitle="item.title"/>
+        </q-item-section>
       </q-item>
     </div>
+    <div class="text-subtitle1 text-dark text-center q-pa-md">
+      <q-icon name="info" size="md" color="primary"/>
+      (Filter bald verfügbar)
+    </div>
   </q-drawer>
-
-  <q-scroll-area style="height: 150vh; max-width: 100vw">
-    <q-list>
-      <q-virtual-scroll v-if="audioItems && audioItems.length > 0" :items="audioItems" virtual-scroll-horizontal
-                        :virtual-scroll-item-size="300">
-        <template v-slot="{ item, index }">
-          <div class="q-pa-sm">
-            <q-item :key="index">
-              <q-card class="my-card" v-ripple @click="handleClick(item)">
-                <q-card-section :style="{backgroundImage: getStripeGradient(item.categories)}"
-                                class="my-card-title">
-                </q-card-section>
-                <q-card-section class="my-card-main">
-                  <q-btn class="absolute-bottom-right" flat round
-                         color="red" :icon="favoriteStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
-                         @click.stop="toggleFavourite(item)"/>
-                  <div class="text-bold text-dark">{{ item.title }}</div>
-                  <q-separator spaced/>
-                  <div class="text-dark">{{ item.speaker }}</div>
-                  <div class="text-dark">{{ convertSecondsToMinutes(item.duration) }}</div>
-                </q-card-section>
-              </q-card>
-            </q-item>
+  <q-page class="q-pa-md bg-grey-1">
+    <div v-if="audioItems && audioItems.length > 0">
+      <section v-for="(category, catName) in groupedAudioItems" :key="catName">
+        <div class="q-pa-md text-dark text-h6">{{ catName }}</div>
+        <q-virtual-scroll :items="category.items" v-slot="{ item, index}" virtual-scroll-horizontal>
+          <div class="no-wrap flex q-gutter-md q-pa-md" :key="index">
+            <q-card class="my-card" v-ripple @click="handleClick(item)">
+              <q-card-section :style="{backgroundImage: getStripeGradient(item.tags)}"
+                              class="my-card-title">
+              </q-card-section>
+              <q-card-section class="my-card-main">
+                <q-btn class="absolute-bottom-right" flat round
+                       color="red" :icon="favoriteStore.isFavorite(item.id) ? 'favorite' : 'favorite_border'"
+                       @click.stop="toggleFavourite(item)"/>
+                <div class="text-bold text-dark">{{ item.title }}</div>
+                <q-separator spaced/>
+                <div class="text-dark">{{ item.speaker }}</div>
+                <div class="text-dark">{{ convertSecondsToMinutes(item.duration) }}</div>
+              </q-card-section>
+            </q-card>
           </div>
-        </template>
-      </q-virtual-scroll>
-      <div v-else class="q-pa-md text-h6 text-center">Keine Audios gefunden</div>
-    </q-list>
-  </q-scroll-area>
+        </q-virtual-scroll>
+      </section>
+    </div>
+
+    <div v-else class="q-pa-md text-h6 text-center">Keine Audios gefunden</div>
+  </q-page>
 </template>
 
 <script>
@@ -76,24 +79,60 @@ export default {
     const router = useRouter();
     const {audioItems} = storeToRefs(audioStore);
     const {audioItem} = storeToRefs(audioStore);
+    const groupedAudioItems = ref({});
     const searchQuery = ref('');
-    const itemCategories = ref([]);
+    const itemCategory = ref('');
+    const itemTags = ref([]);
     const favorites = ref([]);
 
     const convertSecondsToMinutes = useHelper.convertSecondsToMinutes;
     const isLegendOpen = ref(false);
     const {getPaletteColor} = colors;
 
+    const generateDummyData = (count) => {
+      const categories = ['Allgemeines', 'Main 7', 'Corporate Flow'];
+      const tags = ['Holistisch', 'Systemisch', 'Gemeinschaft', 'Erfolg', 'Ordnung', 'Macht', 'Zugehörigkeit', 'Überleben'];
+      const dummyData = [];
+      for (let i = 0; i < count; i++) {
+        const numTags = Math.floor(Math.random() * tags.length) + 1;
+        const selectedTags = [];
+
+        for (let j = 0; j < numTags; j++) {
+          const randomTag = tags[Math.floor(Math.random() * tags.length)];
+          if (!selectedTags.includes(randomTag)) {
+            selectedTags.push(randomTag);
+          }
+        }
+
+        dummyData.push({
+          id: `dummy-${i}`,
+          title: `Dummy Title ${i}`,
+          description: `Dummy Description ${i}`,
+          url: `http://dummy.url/${i}`,
+          duration: Math.floor(Math.random() * 300),
+          category: categories[Math.floor(Math.random() * categories.length)],
+          tags: selectedTags,
+          speaker: `Speaker ${i}`,
+          isFavorite: false,
+        });
+      }
+      return dummyData;
+    };
+
     onMounted(async () => {
       try {
         await audioStore.fetchAudioItems();
-        console.log('Audiodaten geladen:', audioItems.value);
         audioItems.value.forEach((item) => {
-          itemCategories.value.push(item.categories);
+          itemCategory.value = item.category;
         });
+        const dummyData = generateDummyData(10);
+        audioItems.value = [...audioItems.value, ...dummyData];
 
-        //console.log('Kategorien:', itemCategories);
-        //console.log('Favoriten:', favorites);
+        groupedAudioItems.value = groupAudioItemsByCategory(audioItems.value);
+
+        audioItems.value.forEach((item) => {
+          itemTags.value.push(item.tags);
+        });
 
       } catch (error) {
         console.error('Fehler beim Laden der Audiodaten:', error);
@@ -102,43 +141,53 @@ export default {
     });
 
     const categoryColors = {
-      'Zugehörigkeit': '#7d4c7a',
-      'Macht': '#9a1f33',
-      'Ordnung': '#194181',
-      'Erfolg': '#e38044',
-      'Gemeinschaft': '#507f6a',
-      'Systemisch': '#f7d766',
       'Holistisch': '#6aa3a3',
+      'Systemisch': '#f7d766',
+      'Gemeinschaft': '#507f6a',
+      'Erfolg': '#e38044',
+      'Ordnung': '#194181',
+      'Macht': '#9a1f33',
+      'Zugehörigkeit': '#7d4c7a',
       'Überleben': '#68251b',
     };
 
     const legendColors = {
-      'Zugehörigkeit': 'purple-1',
-      'Macht': 'red-1',
-      'Ordnung': 'blue-1',
-      'Erfolg': 'orange-1',
-      'Gemeinschaft': 'green-1',
-      'Systemisch': 'yellow-1',
       'Holistisch': 'teal-1',
+      'Systemisch': 'yellow-1',
+      'Gemeinschaft': 'green-1',
+      'Erfolg': 'orange-1',
+      'Ordnung': 'blue-1',
+      'Macht': 'red-1',
+      'Zugehörigkeit': 'purple-1',
       'Überleben': 'brown-1',
     };
 
-    const getCategoryColor = (category) => {
-      //console.log('Kategorie:', category);
-      //console.log('Farben:', categoryColors);
-      return categoryColors[category] || 'grey';
+    const groupAudioItemsByCategory = (items) => {
+      return items.reduce((groupedItems, item) => {
+        if (!groupedItems[item.category]) {
+          groupedItems[item.category] = {items: []};
+        }
+        groupedItems[item.category].items.push(item);
+        return groupedItems;
+      }, {});
     };
 
-    const getStripeGradient = (itemCategories) => {
+    const getCategoryColor = (tag) => {
+      //console.log('Kategorie:', category);
+      //console.log('Farben:', categoryColors);
+      return categoryColors[tag] || 'grey';
+    };
+
+    const getStripeGradient = (itemTags) => {
       //console.log('getStripeGradient');
-      if (!itemCategories || itemCategories.length === 0) {
+      if (!itemTags || itemTags.length === 0) {
         return 'grey';
       }
 
-      const gradientStops = itemCategories.map((category, index) => {
-        const color = getCategoryColor(category) || 'grey';
-        const startPercent = (100 / itemCategories.length) * index;
-        const endPercent = (100 / itemCategories.length) * (index + 1);
+      const gradientStops = itemTags.map((tag, index) => {
+        const color = getCategoryColor(tag) || 'grey';
+        const startPercent = (100 / itemTags.length) * index;
+        const endPercent = (100 / itemTags.length) * (index + 1);
 
         return `${color} ${startPercent}%, ${color} ${endPercent}%`;
       }).join(', ');
@@ -153,8 +202,6 @@ export default {
 
     const legendData = computed(() => {
       return Object.entries(legendColors).map(([title, color]) => {
-        console.log('Legend Titel:', title);
-        console.log('Legend Farbe:', color);
         return {
           title,
           color
@@ -169,12 +216,8 @@ export default {
     const toggleFavourite = (item) => {
       if (favoriteStore.isFavorite(item.id)) {
         favoriteStore.removeFavorite(item.id);
-        console.log('Favoriten:', favorites);
-        console.log('Favorit entfernt:', item.id);
       } else {
         favoriteStore.addFavorite(item.id);
-        console.log('Favoriten:', favorites);
-        console.log('Favorit hinzugefügt:', item.id);
       }
     };
 
@@ -185,25 +228,6 @@ export default {
       }, 300);
     };
 
-    // const filteredItems = computed(() => {
-    //   if (!searchQuery.value) {
-    //     return audioItems.value;
-    //   }
-    //   return audioItems.value.filter(item =>
-    //     filterFunction(item, searchQuery.value)
-    //   );
-    // });
-    //
-    // const filterFunction = (item, query) => {
-    //   const queryLower = query.toLowerCase();
-    //   return item.title.toLowerCase().includes(queryLower) ||
-    //     item.description.toLowerCase().includes(queryLower);
-    // }
-    //
-    // const filterItems = (query) => {
-    //   searchQuery.value = query;
-    // };
-
     return {
       favoriteStore,
       audioStore,
@@ -213,8 +237,10 @@ export default {
       handleClick,
       audioItem,
       audioItems,
+      groupedAudioItems,
       convertSecondsToMinutes,
-      itemCategories,
+      itemCategory,
+      itemTags,
       categoryColors,
       getCategoryColor,
       toggleFavourite,
@@ -223,6 +249,7 @@ export default {
       legendData,
       toggleLegend,
       getPaletteColor,
+      checkedTitle: ref(['Holistisch', 'Systemisch', 'Gemeinschaft', 'Erfolg', 'Ordnung', 'Macht', 'Zugehörigkeit', 'Überleben']),
     };
   }
 };

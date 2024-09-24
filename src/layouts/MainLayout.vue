@@ -5,10 +5,6 @@
       <router-view />
     </q-page-container>
 
-    <q-page-scroller>
-
-    </q-page-scroller>
-
     <q-footer elevated class="bg-grey-2">
       <q-tabs active-bg-color="primary">
         <q-route-tab

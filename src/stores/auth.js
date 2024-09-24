@@ -16,7 +16,6 @@ export const useAuthStore = defineStore('auth', {
         this.me = response.content.user;
         const userStore = useUserStore();
         userStore.setUserId(response.content.user.id);
-        console.log("UserID: ", response.content.user.id);
         return response;
       } catch (error) {
         this.isSignedIn = false;

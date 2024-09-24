@@ -14,9 +14,7 @@ export const useAudioStore = defineStore('audio', {
       try {
         const audioItems = await ApiAudioService.getAudioItems();
         this.audioItems = audioItems;
-        console.log('AudioItems loaded:', audioItems);
       } catch (error) {
-        console.error('Error loading audio items:', error);
         return error;
       }
     },
@@ -24,7 +22,6 @@ export const useAudioStore = defineStore('audio', {
       try {
         const audioItem = await ApiAudioService.getAudioItem(this.id);
         this.audioItem = audioItem;
-        console.log('AudioItem loaded:', audioItem);
       } catch (error) {
         console.error('Error loading audio item:', error);
         return error;

@@ -5,11 +5,8 @@ const UserModel = require("../models/UserModel");
 class AudioItemManager {
 
   static async getAudioItems() {
-    console.log("AudioItemManager - getAudioItems");
     try {
-      console.log("AudioItemModel: ", AudioItemModel);
       const audioItemModels = await AudioItemModel.find();
-      console.log("audioItemModels: ", audioItemModels);
       if (!audioItemModels) return null;
       return audioItemModels.map((audioItemModel) => createAudioItemFromModel(audioItemModel));
     }
@@ -19,10 +16,8 @@ class AudioItemManager {
   }
 
   static async getAudioItemById(audioItemId) {
-    console.log("audioItemId: ", audioItemId);
     const audioItemModel = await AudioItemModel.findById(audioItemId);
     if (!audioItemModel) return null;
-    console.log("audioItemModel: ", audioItemModel);
     return createAudioItemFromModel(audioItemModel);
   }
 
@@ -44,7 +39,8 @@ function createAudioItemFromModel(audioItemModel) {
     audioItemModel.description,
     audioItemModel.url,
     audioItemModel.duration,
-    audioItemModel.categories,
+    audioItemModel.category,
+    audioItemModel.tags,
     audioItemModel.speaker,
     audioItemModel.isFavorite,
   );

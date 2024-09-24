@@ -1,6 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card class="bg-grey-3" style="width: min(400px)">
+  <q-page class="bg-grey-1 flex flex-center q-pa-md">
+    <q-card class="bg-grey-3 q-pa-sm q-ma-xl">
       <q-card-section>
         <q-img src="../assets/snackbar_logo_nobg.png" class="full-width"/>
       </q-card-section>
@@ -55,15 +55,10 @@ export default {
         });
         const response = await api.post('/auth/login', {username: username.value, password: password.value});
 
-        // If login is successful
-        console.log(response);
         await userStore.setUserId(response.data.user.id);
-        console.log(response.data.user.id);
         await router.push({name: 'HomePage'});
         NotifyService.success('Login successful');
       } catch (error) {
-        // Handle login errors
-        console.error('Login failed:', error);
         NotifyService.error('Login failed. Please check your credentials.');
       }
     };

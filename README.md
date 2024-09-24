@@ -4,7 +4,7 @@ ___
 
 Diese App ist im Rahmen der Bachelorarbeit von Timm Lohmann <timm.lohmann@e-c-crew.de> an der FH Kiel entstanden.
 Betreut wurde die Arbeit von Prof. Dr.-Ing. Jens Ehlers <jens.ehlers@fh-kiel.de>
-sowie von Lennard Scheffler <lennard.scheffler@e-c-crew.de> bei der ECC GmbH. <https://e-c-crew.de>
+sowie von Lennard Scheffler <lennard.scheffler@e-c-crew.de> bei der ECC GmbH. <e-c-crew.de>
 
 ### Beschreibung
 

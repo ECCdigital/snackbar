@@ -1,4 +1,5 @@
-# snackbar (not related to the ©Android Snackbar-Component!)
+# snackbar  
+(not related to the Android Snackbar-Component!)
 
 ### ECC Audio Podcast App
 

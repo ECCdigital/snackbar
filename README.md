@@ -23,7 +23,16 @@ Die App stellt Podcasts zu den Themen Kultur- und Führungskräfteentwicklung be
 
 
 ## Installation
+- Voraussetzungen:
+  - node.js <https://nodejs.org/en/download/prebuilt-installer>
+  - docker & docker compose <https://docs.docker.com/compose/install/>
+  - quasar cli <https://quasar.dev/start/quasar-cli>
+```bash
+npm i -g @quasar/cli
+```
+
 ### Abhängigkeiten installieren
+- Im App-Verzeichnis
 ```bash
 yarn
 # oder

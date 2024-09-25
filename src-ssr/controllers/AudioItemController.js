@@ -3,10 +3,8 @@ import AudioItemManager from "../data-managers/AudioItemManager";
 class AudioItemController {
 
   static async getAudioItems(req, res) {
-    console.log("AudioItemController - getAudioItems");
     try {
       const audioItems = await AudioItemManager.getAudioItems();
-      console.log("audioItems: ", audioItems);
       return res.success({ audioItems });
     } catch (err) {
       console.error("AudioItemController - getAudioItems: ", err);

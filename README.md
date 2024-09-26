@@ -52,6 +52,7 @@ docker-compose up -d
 
 ### Die App im Entwicklungsmodus starten
 - Server Side Rendering
+- Aufruf der Anwendung im Browser über http//localhost:3000
 ```bash
 quasar dev -m ssr
 ```

@@ -1,10 +1,11 @@
-# snackbar
-___
+# snackbar  
+(not related to the Android Snackbar-Component!)
+
 ### ECC Audio Podcast App
 
 Diese App ist im Rahmen der Bachelorarbeit von Timm Lohmann <timm.lohmann@e-c-crew.de> an der FH Kiel entstanden.
 Betreut wurde die Arbeit von Prof. Dr.-Ing. Jens Ehlers <jens.ehlers@fh-kiel.de>
-sowie von Lennard Scheffler <lennard.scheffler@e-c-crew.de> bei der ECC GmbH. <e-c-crew.de>
+sowie von Lennard Scheffler <lennard.scheffler@e-c-crew.de> bei der ECC GmbH. <https://e-c-crew.de>
 
 ### Beschreibung
 
@@ -23,10 +24,19 @@ Die App stellt Podcasts zu den Themen Kultur- und Führungskräfteentwicklung be
 
 
 ## Installation
+- Voraussetzungen:
+  - node.js <https://nodejs.org/en/download/prebuilt-installer>
+  - docker & docker compose <https://docs.docker.com/compose/install/>
+  - quasar cli <https://quasar.dev/start/quasar-cli>
+```bash
+npm i -g @quasar/cli
+```
+
 ### Abhängigkeiten installieren
+- Im App-Verzeichnis
 ```bash
 yarn
-# or
+# oder
 npm install
 ```
 
@@ -36,7 +46,6 @@ npm install
 - Login-Daten für die Anwendung:
   - Benutzername: timm
   - Passwort: 1234
-
 ```bash
 docker-compose up -d
 ```
@@ -49,14 +58,4 @@ quasar dev -m ssr
 - Android App
 ```bash
 quasar dev -m capacitor -T android
-```
-
-### Die App für die Produktion bauen
-- Server Side Rendering
-```bash
-quasar build -m ssr
-```
-- Android App
-```bash
-quasar build -m capacitor -T android
-```
+``` 

@@ -1,0 +1,9 @@
+[{
+  "_id": {
+    "$oid": "66d97865f959b49366086d0d"
+  },
+  "username": "timm",
+  "email": "timm.lohmann@e-c-crew.de",
+  "password": "$2a$10$BnSshzvAcJvweoCNJzEp7.UrWKCbM.czcCgooyh8Izlpow7xEISD2",
+  "isVerified": "true"
+}]

@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "66daed58f959b49366086d15"
+  },
+  "title": "Vorstellung Kerstin & Stephanie",
+  "description": "Die Coaches Kerstin und Stephanie stellen sich vor.\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n\nDuis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,",
+  "url": "https://cloud.e-c-crew.dev/index.php/s/CEZdwckGQAbzoGq/download/Vorstellung%20Kerstin%20und%20Stephanie.wav",
+  "duration": 353,
+  "speaker": "Kerstin & Stephanie",
+  "isFavorite": "false",
+  "category": "Allgemeines",
+  "tags": [
+    "Gemeinschaft",
+    "Zugehörigkeit"
+  ]
+},
+{
+  "_id": {
+    "$oid": "66daee16f959b49366086d16"
+  },
+  "title": "Main 7 Einführung",
+  "description": "Hier erfahrt ihr von Stephanie, worum es bei den Main 7 geht.\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.   \n\nDuis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,",
+  "url": "https://cloud.e-c-crew.dev/index.php/s/DwAWJgDb47PW3tq/download/MAIN%207%20Audio.wav",
+  "duration": 625,
+  "speaker": "Stephanie",
+  "isFavorite": "true",
+  "category": "Main 7",
+  "tags": [
+    "Überleben",
+    "Zugehörigkeit",
+    "Macht",
+    "Ordnung",
+    "Erfolg",
+    "Gemeinschaft",
+    "Systemisch",
+    "Holistisch"
+  ]
+}]

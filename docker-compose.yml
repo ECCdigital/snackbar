@@ -1,11 +1,25 @@
 services:
   snackbar-database:
     image: mongo:latest
-    container_name: snackbar-database-manager
+    env_file:
+      - .env
     restart: unless-stopped
     ports:
       - "27017:27017"
-    environment:
-        MONGO_INITDB_ROOT_USERNAME: app
-        MONGO_INITDB_ROOT_PASSWORD: dev
-        MONGO_INITDB_DATABASE: snackbar
+    networks:
+        - snackbar-network
+
+  mongo-seed:
+    env_file:
+      - .env
+    build:
+      context: ./mongo_seed
+      dockerfile: mongo-seed/Dockerfile
+      args:
+        - DATABASE_URI=$DATABASE_URI
+        - USERNAME=$MONGO_INITDB_ROOT_USERNAME
+        - PASSWORD=$MONGO_INITDB_ROOT_PASSWORD
+    depends_on:
+      - snackbar-database
+    networks:
+      - snackbar-network

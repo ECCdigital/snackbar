@@ -41,6 +41,11 @@ npm install
 ```
 
 ### Den Docker Container für die Datenbank starten
+- Voraussetzung: Docker und Docker Compose sind installiert
+- Der Container wird im Hintergrund gestartet und sollte mit Initialdaten gefüllt werden
+- Login-Daten für die Anwendung:
+  - Benutzername: timm
+  - Passwort: 1234
 ```bash
 docker-compose up -d
 ```
